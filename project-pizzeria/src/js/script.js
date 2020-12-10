@@ -149,9 +149,6 @@
           else {
             if (option.hasOwnProperty('default') && option.default === true) {
               price -= option.price;
-              if (allExtraImg) {
-                allExtraImg.classList.toggle(classNames.menuProduct.imageVisible);
-              }
             }
           }
         }
