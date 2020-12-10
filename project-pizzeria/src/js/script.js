@@ -77,7 +77,6 @@
       thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
       thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
       thisProduct.formInputs = thisProduct.element.querySelectorAll(select.all.formInputs);
-      // console.log(thisProduct.formInputs, 'thisProduct.formInputs');
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
     }
@@ -126,13 +125,39 @@
         const param = paramsId[singlParamId];
         const paramOptions = param.options;
         for (const singlParamOption in paramOptions) {
-          const option = param.options[singlParamOption];
+          const option = paramOptions[singlParamOption];
+          // images visibility
+          const allExtraImg = thisProduct.element.querySelector(`img.${singlParamId}-${singlParamOption}`);
+          if (allExtraImg) {
+            if (option.hasOwnProperty('default') && option.default === true) {
+              allExtraImg.classList.add(classNames.menuProduct.imageVisible);
+            }
+            else {
+              allExtraImg.classList.remove(classNames.menuProduct.imageVisible);
+            }
+          }
           if (formData[singlParamId] && formData[singlParamId].includes(singlParamOption)) {
-            if (!option.hasOwnProperty('default') || option.default === false) price += option.price;
+            // console.log(formData[singlParamId], 'aaa');
+            // console.log(formData, 'aaabbb');
+            for (let xyz of formData[singlParamId]) {
+              // console.log(xyz);
+              // console.log(singlParamId);
+              console.log(`${xyz}-${singlParamId}`);
+            }
+            if (!option.hasOwnProperty('default') || option.default === false) {
+              price += option.price;
+
+              if (allExtraImg) {
+                allExtraImg.classList.toggle(classNames.menuProduct.imageVisible);
+              }
+            }
           }
           else {
             if (option.hasOwnProperty('default') && option.default === true) {
               price -= option.price;
+              if (allExtraImg) {
+                allExtraImg.classList.toggle(classNames.menuProduct.imageVisible);
+              }
             }
           }
         }
