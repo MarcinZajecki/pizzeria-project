@@ -120,7 +120,6 @@
 
     processOrder() {
       const thisProduct = this;
-      console.log('optionImg');
       const formData = utils.serializeFormToObject(thisProduct.form);
       let price = thisProduct.data.price;
       const paramsId = thisProduct.data.params;
@@ -130,7 +129,7 @@
         for (const singlParamOption in paramOptions) {
           const option = paramOptions[singlParamOption];
           // Menu images - visibility
-          const allExtraImg = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${singlParamOption}`);
+          const allExtraImg = thisProduct.element.querySelector(`img.${singlParamId}-${singlParamOption}`);
           if (allExtraImg) {
             allExtraImg.classList.remove(classNames.menuProduct.imageVisible);
 
@@ -185,3 +184,4 @@
 
   app.init();
 }
+console.log('optionImg');
