@@ -120,7 +120,6 @@
 
     processOrder() {
       const thisProduct = this;
-      console.log('aaaa');
       const formData = utils.serializeFormToObject(thisProduct.form);
       let price = thisProduct.data.price;
       const paramsId = thisProduct.data.params;
