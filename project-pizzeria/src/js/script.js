@@ -79,6 +79,7 @@
       thisProduct.formInputs = thisProduct.element.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = select.menuProduct.imageWrapper;
     }
 
     initAccordion() {
@@ -126,30 +127,20 @@
         const paramOptions = param.options;
         for (const singlParamOption in paramOptions) {
           const option = paramOptions[singlParamOption];
-          // images visibility
-          const allExtraImg = thisProduct.element.querySelector(`img.${singlParamId}-${singlParamOption}`);
+          // Menu images - visibility
+          const allExtraImg = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${singlParamOption}`);
           if (allExtraImg) {
-            if (option.hasOwnProperty('default') && option.default === true) {
-              allExtraImg.classList.add(classNames.menuProduct.imageVisible);
-            }
-            else {
-              allExtraImg.classList.remove(classNames.menuProduct.imageVisible);
-            }
+            allExtraImg.classList.remove(classNames.menuProduct.imageVisible);
           }
           if (formData[singlParamId] && formData[singlParamId].includes(singlParamOption)) {
-            // console.log(formData[singlParamId], 'aaa');
-            // console.log(formData, 'aaabbb');
-            for (let xyz of formData[singlParamId]) {
-              // console.log(xyz);
-              // console.log(singlParamId);
-              console.log(`${xyz}-${singlParamId}`);
+            for (const inclOptions of formData[singlParamId]) {
+              const allExtraImgIncl = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${inclOptions}`);
+              if (allExtraImgIncl) {
+                allExtraImgIncl.classList.add(classNames.menuProduct.imageVisible);
+              }
             }
             if (!option.hasOwnProperty('default') || option.default === false) {
               price += option.price;
-
-              if (allExtraImg) {
-                allExtraImg.classList.toggle(classNames.menuProduct.imageVisible);
-              }
             }
           }
           else {
