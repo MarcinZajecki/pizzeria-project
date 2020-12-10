@@ -105,20 +105,22 @@
       thisProduct.form.addEventListener('submit', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
-      })
+      });
       for (const singleInput of thisProduct.formInputs) {
         singleInput.addEventListener('change', function (event) {
           thisProduct.processOrder();
-        })
+          console.log(event);
+        });
       }
       thisProduct.cartButton.addEventListener('click', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
-      })
+      });
     }
 
     processOrder() {
       const thisProduct = this;
+      console.log('aaaa');
       const formData = utils.serializeFormToObject(thisProduct.form);
       let price = thisProduct.data.price;
       const paramsId = thisProduct.data.params;
@@ -128,13 +130,14 @@
         for (const singlParamOption in paramOptions) {
           const option = paramOptions[singlParamOption];
           // Menu images - visibility
-          const allExtraImg = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${singlParamOption}`);
+          const allExtraImg = thisProduct.element.querySelector(`img.${singlParamId}-${singlParamOption}`);
           if (allExtraImg) {
             allExtraImg.classList.remove(classNames.menuProduct.imageVisible);
+
           }
           if (formData[singlParamId] && formData[singlParamId].includes(singlParamOption)) {
             for (const inclOptions of formData[singlParamId]) {
-              const allExtraImgIncl = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${inclOptions}`);
+              const allExtraImgIncl = thisProduct.element.querySelector(`img.${singlParamId}-${inclOptions}`);
               if (allExtraImgIncl) {
                 allExtraImgIncl.classList.add(classNames.menuProduct.imageVisible);
               }
