@@ -18,7 +18,6 @@
     },
     menuProduct: {
       clickable: '.product__header',
-      clickableElement: '.product__header i',
       form: '.product__order',
       priceElem: '.product__total-price .price',
       imageWrapper: '.product__images',
@@ -53,15 +52,17 @@
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
   };
 
-  // 
   class Product {
     constructor(id, data) {
       const thisProduct = this;
       thisProduct.id = id;
       thisProduct.data = data;
       thisProduct.renderInMenu();
+      thisProduct.getElements();
       thisProduct.initAccordion();
-      console.log('new product:', thisProduct);
+      thisProduct.initOrderForm();
+      thisProduct.processOrder();
+      // console.log('new product:', thisProduct);
     }
     renderInMenu() {
       const thisProduct = this;
@@ -71,12 +72,21 @@
       menuContainer.appendChild(thisProduct.element);
     }
 
+    getElements() {
+      const thisProduct = this;
+      thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
+      thisProduct.formInputs = thisProduct.element.querySelectorAll(select.all.formInputs);
+      // console.log(thisProduct.formInputs, 'thisProduct.formInputs');
+      thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
+      thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+    }
+
     initAccordion() {
       const thisProduct = this;
       /* find the clickable trigger (the element that should react to clicking) */
-      const clickableTrigger = thisProduct.element.querySelector(select.menuProduct.clickableElement);
       /* START: add event listener to clickable trigger on event click */
-      clickableTrigger.addEventListener('click', function (event) {
+      thisProduct.accordionTrigger.addEventListener('click', function (event) {
         /* prevent default action for event */
         event.preventDefault();
         /* find active product (product that has active class) */
@@ -89,6 +99,46 @@
         thisProduct.element.classList.toggle('active');
       });
     }
+
+    initOrderForm() {
+      const thisProduct = this;
+      thisProduct.form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      })
+      for (const singleInput of thisProduct.formInputs) {
+        singleInput.addEventListener('change', function (event) {
+          thisProduct.processOrder();
+        })
+      }
+      thisProduct.cartButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      })
+    }
+
+    processOrder() {
+      const thisProduct = this;
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      let price = thisProduct.data.price;
+      const paramsId = thisProduct.data.params;
+      for (const singlParamId in paramsId) {
+        const param = paramsId[singlParamId];
+        const paramOptions = param.options;
+        for (const singlParamOption in paramOptions) {
+          const option = param.options[singlParamOption];
+          if (formData[singlParamId] && formData[singlParamId].includes(singlParamOption)) {
+            if (!option.hasOwnProperty('default') || option.default === false) price += option.price;
+          }
+          else {
+            if (option.hasOwnProperty('default') && option.default === true) {
+              price -= option.price;
+            }
+          }
+        }
+      }
+      thisProduct.priceElem.innerHTML = price;
+    }
   }
 
   const app = {
@@ -99,7 +149,6 @@
 
     initMenu: function () {
       const thisApp = this;
-      console.log('thisApp.data', thisApp.data);
       for (const productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
       }
