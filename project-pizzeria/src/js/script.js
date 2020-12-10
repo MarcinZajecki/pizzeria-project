@@ -137,7 +137,7 @@
           }
           if (formData[singlParamId] && formData[singlParamId].includes(singlParamOption)) {
             for (const inclOptions of formData[singlParamId]) {
-              const allExtraImgIncl = thisProduct.element.querySelector(`img.${singlParamId}-${inclOptions}`);
+              const allExtraImgIncl = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${inclOptions}`);
               if (allExtraImgIncl) {
                 allExtraImgIncl.classList.add(classNames.menuProduct.imageVisible);
               }
