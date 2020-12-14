@@ -169,7 +169,7 @@
       const thisWidget = this;
       thisWidget.getElements(elem);
       thisWidget.initActions();
-      thisWidget.setValue(thisWidget.input.value);
+      thisWidget.setValue(settings.amountWidget.defaultValue);
     }
 
     getElements(elem) {
@@ -178,21 +178,6 @@
       thisWidget.input = thisWidget.elem.querySelector('input');
       thisWidget.btnLess = thisWidget.elem.querySelector('a[href*="less"].btn-quantity');
       thisWidget.btnMore = thisWidget.elem.querySelector('a[href*="#more"].btn-quantity');
-    }
-
-    initActions() {
-      const thisWidget = this;
-      thisWidget.input.addEventListener('change', function () {
-        thisWidget.setValue(thisWidget.input.value);
-      });
-      thisWidget.btnLess.addEventListener('click', function (event) {
-        event.preventDefault();
-        thisWidget.setValue(thisWidget.value - 1);
-      });
-      thisWidget.btnMore.addEventListener('click', function (event) {
-        event.preventDefault();
-        thisWidget.setValue(thisWidget.value + 1);
-      });
     }
 
     announce() {
@@ -206,12 +191,26 @@
       const newValue = parseInt(value);
       const maxValue = settings.amountWidget.defaultMax;
       const minValue = settings.amountWidget.defaultMin;
-      thisWidget.value = settings.amountWidget.defaultValue;
       if (thisWidget.value !== newValue && !isNaN(newValue) && newValue >= minValue && newValue <= maxValue) {
         thisWidget.value = newValue;
         thisWidget.announce();
       }
       thisWidget.input.value = thisWidget.value;
+    }
+
+    initActions() {
+      const thisWidget = this;
+      thisWidget.input.addEventListener('change', function () {
+        thisWidget.setValue(thisWidget.value);
+      });
+      thisWidget.btnLess.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisWidget.setValue(thisWidget.value - 1);
+      });
+      thisWidget.btnMore.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisWidget.setValue(thisWidget.value + 1);
+      });
     }
 
   }
