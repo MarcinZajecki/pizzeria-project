@@ -95,6 +95,7 @@
       thisProduct.getElements();
       thisProduct.initAccordion();
       thisProduct.initOrderForm();
+      thisProduct.menuImages();
       thisProduct.initAmountWidget();
     }
 
@@ -161,7 +162,34 @@
       });
     }
 
+    menuImages() {
+      // debugger;
+      const thisProduct = this;
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      const paramsId = thisProduct.data.params;
+      for (const singlParamId in paramsId) {
+        const param = paramsId[singlParamId];
+        const paramOptions = param.options;
+        for (const singlParamOption in paramOptions) {
+          const allExtraImg = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${singlParamOption}`);
+          if (allExtraImg) {
+            allExtraImg.classList.remove(classNames.menuProduct.imageVisible);
+          }
+          if (formData[singlParamId] && formData[singlParamId].includes(singlParamOption)) {
+            console.log(formData, 'thisProduct');
+            for (const inclOptions of formData[singlParamId]) {
+              const allExtraImgIncl = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${inclOptions}`);
+              if (allExtraImgIncl) {
+                allExtraImgIncl.classList.add(classNames.menuProduct.imageVisible);
+              }
+            }
+          }
+        }
+      }
+    }
+
     processOrder() {
+      // debugger;
       const thisProduct = this;
       const formData = utils.serializeFormToObject(thisProduct.form);
       let price = thisProduct.data.price;
