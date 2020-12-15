@@ -225,6 +225,7 @@
       }
       thisProduct.priceElem.innerHTML = price * thisProduct.amountWidget.value;
     }
+
   }
 
   class AmountWidget {
@@ -275,7 +276,32 @@
         thisWidget.setValue(thisWidget.value + 1);
       });
     }
+  }
 
+  class Cart {
+    constructor(element) {
+      const thisCart = this;
+      thisCart.products = [];
+      thisCart.getElements(element);
+      thisCart.cartToggleTrigger();
+      console.log('class Cart');
+      console.log(element, 'class Cart element');
+    }
+
+    getElements(element) {
+      const thisCart = this;
+      thisCart.dom = {};
+      thisCart.dom.wrapper = element;
+      thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+    }
+
+    cartToggleTrigger() {
+      const thisCart = this;
+      console.log(thisCart.toggleTrigger, 'thisCart.toggleTrigger');
+      thisCart.dom.toggleTrigger.addEventListener('click', function () {
+        thisCart.dom.wrapper.classList.toggle('active');
+      });
+    }
   }
 
   const app = {
@@ -291,6 +317,12 @@
       }
     },
 
+    initCart: function () {
+      const thisApp = this;
+      const cartWrapper = document.querySelector(select.containerOf.cart);
+      thisApp.initCart = new Cart(cartWrapper);
+    },
+
     init: function () {
       const thisApp = this;
       console.log('*** App starting ***');
@@ -301,6 +333,7 @@
 
       thisApp.initData();
       thisApp.initMenu();
+      thisApp.initCart();
     },
   };
 
