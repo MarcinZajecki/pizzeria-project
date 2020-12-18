@@ -27,9 +27,14 @@
     },
     widgets: {
       amount: {
+        amountWrapper: '.amount',
         input: 'input.amount', // CODE CHANGED
         linkDecrease: 'a[href="#less"]',
+        linkDecreaseHrefAtt: '#less',
+        iconDecreaseId: 'decreaseAmount',
         linkIncrease: 'a[href="#more"]',
+        linkIncreaseHrefAtt: '#more',
+        iconIncreaseId: 'increaseAmount',
       },
     },
     // CODE ADDED START
@@ -95,8 +100,8 @@
       thisProduct.getElements();
       thisProduct.initAccordion();
       thisProduct.initOrderForm();
-      thisProduct.menuImages();
       thisProduct.initAmountWidget();
+      thisProduct.processOrder();
     }
 
     renderInMenu() {
@@ -115,8 +120,8 @@
       thisProduct.dom.formInputs = thisProduct.element.querySelectorAll(select.all.formInputs);
       thisProduct.dom.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.dom.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
-      thisProduct.imageWrapper = select.menuProduct.imageWrapper;
       thisProduct.dom.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
+      thisProduct.imageWrapper = select.menuProduct.imageWrapper;
     }
 
     initAccordion() {
@@ -163,55 +168,23 @@
       });
     }
 
-    menuImages() {
-      // debugger;
-      const thisProduct = this;
-      const formData = utils.serializeFormToObject(thisProduct.dom.form);
-      const paramsId = thisProduct.data.params;
-      for (const singlParamId in paramsId) {
-        const param = paramsId[singlParamId];
-        const paramOptions = param.options;
-        for (const singlParamOption in paramOptions) {
-          const allExtraImg = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${singlParamOption}`);
-          if (allExtraImg) {
-            allExtraImg.classList.remove(classNames.menuProduct.imageVisible);
-          }
-          if (formData[singlParamId] && formData[singlParamId].includes(singlParamOption)) {
-            console.log(formData, 'thisProduct');
-            for (const inclOptions of formData[singlParamId]) {
-              const allExtraImgIncl = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${inclOptions}`);
-              if (allExtraImgIncl) {
-                allExtraImgIncl.classList.add(classNames.menuProduct.imageVisible);
-              }
-            }
-          }
-        }
-      }
-    }
-
     processOrder() {
       // debugger;
       const thisProduct = this;
       const formData = utils.serializeFormToObject(thisProduct.dom.form);
       let price = thisProduct.data.price;
-      const paramsId = thisProduct.data.params;
-      for (const singlParamId in paramsId) {
-        const param = paramsId[singlParamId];
+      const params = thisProduct.data.params;
+      for (const singlParamId in params) {
+        const param = params[singlParamId];
         const paramOptions = param.options;
         for (const singlParamOption in paramOptions) {
           const option = paramOptions[singlParamOption];
           // Menu images - visibility
-          const allExtraImg = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${singlParamOption}`);
-          if (allExtraImg) {
-            allExtraImg.classList.remove(classNames.menuProduct.imageVisible);
-          }
+          const menuImages = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${singlParamOption}`);
+          console.log(menuImages, 'menuImages');
           if (formData[singlParamId] && formData[singlParamId].includes(singlParamOption)) {
-            console.log(formData, 'thisProduct');
-            for (const inclOptions of formData[singlParamId]) {
-              const allExtraImgIncl = thisProduct.element.querySelector(`${thisProduct.imageWrapper} img.${singlParamId}-${inclOptions}`);
-              if (allExtraImgIncl) {
-                allExtraImgIncl.classList.add(classNames.menuProduct.imageVisible);
-              }
+            if (menuImages) {
+              menuImages.classList.add(classNames.menuProduct.imageVisible);
             }
             if (!option['default'] || option.default === false) {
               price = (price + option.price);
@@ -220,6 +193,9 @@
           else {
             if (option['default'] && option.default === true) {
               price = (price - option.price);
+            }
+            if (menuImages) {
+              menuImages.classList.remove(classNames.menuProduct.imageVisible);
             }
           }
         }
@@ -244,6 +220,7 @@
       thisWidget.dom.input = thisWidget.dom.elem.querySelector('input');
       thisWidget.dom.btnLess = thisWidget.dom.elem.querySelector('a[href*="less"].btn-quantity');
       thisWidget.dom.btnMore = thisWidget.dom.elem.querySelector('a[href*="#more"].btn-quantity');
+      thisWidget.dom.amountWrapper = thisWidget.dom.elem.querySelector('div.amount');
     }
 
     announce() {
@@ -266,16 +243,18 @@
 
     initActions() {
       const thisWidget = this;
-      thisWidget.dom.input.addEventListener('change', function () {
+      thisWidget.dom.input.addEventListener('change', function (event) {
         thisWidget.setValue(thisWidget.value);
+        console.log(event);
       });
-      thisWidget.dom.btnLess.addEventListener('click', function (event) {
+      thisWidget.dom.elem.addEventListener('click', function (event) {
         event.preventDefault();
-        thisWidget.setValue(thisWidget.value - 1);
-      });
-      thisWidget.dom.btnMore.addEventListener('click', function (event) {
-        event.preventDefault();
-        thisWidget.setValue(thisWidget.value + 1);
+        if (event.target.getAttribute('href') == select.widgets.amount.linkDecreaseHrefAtt || event.target.getAttribute('id') == select.widgets.amount.iconDecreaseId) {
+          thisWidget.setValue(thisWidget.value - 1);
+        }
+        else if (event.target.getAttribute('href') == select.widgets.amount.linkIncreaseHrefAtt || event.target.getAttribute('id') == select.widgets.amount.iconIncreaseId) {
+          thisWidget.setValue(thisWidget.value + 1);
+        }
       });
     }
   }
@@ -286,8 +265,6 @@
       thisCart.products = [];
       thisCart.getElements(element);
       thisCart.cartToggleTrigger();
-      console.log('class Cart');
-      console.log(element, 'class Cart element');
     }
 
     getElements(element) {
@@ -299,7 +276,6 @@
 
     cartToggleTrigger() {
       const thisCart = this;
-      console.log(thisCart.toggleTrigger, 'thisCart.toggleTrigger');
       thisCart.dom.toggleTrigger.addEventListener('click', function () {
         thisCart.dom.wrapper.classList.toggle('active');
       });
