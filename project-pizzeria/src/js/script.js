@@ -104,7 +104,6 @@
       thisProduct.processOrder();
       thisProduct.prepareCartProductParams();
       thisProduct.prepareCartProduct();
-      thisProduct.addToCart();
     }
 
     renderInMenu() {
@@ -217,18 +216,17 @@
         const paramOptions = param.options;
         for (const singlParamOption in paramOptions) {
           const option = paramOptions[singlParamOption];
-          const selectedOption = formData[singlParamId] && formData[singlParamId].includes(singlParamOption);
-          if (selectedOption) {
+          if (formData[singlParamId] && formData[singlParamId].includes(singlParamOption)) {
             paramObject[singlParamId] = {
               label: param.label,
               options: {
                 singlParamOption: option.label,
               },
-            }
+            };
           }
         }
       }
-      if (Object.entries(paramObject).length !== 0) return paramObject
+      return paramObject;
     }
 
     prepareCartProduct() {
@@ -310,7 +308,6 @@
       thisCart.products = [];
       thisCart.getElements(element);
       thisCart.cartToggleTrigger();
-      thisCart.addCartObjects();
     }
 
     getElements(element) {
@@ -318,7 +315,7 @@
       thisCart.dom = {};
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
-      thisCart.dom.productList = document.querySelector('.cart__order-summary');
+      thisCart.dom.productList = document.querySelector(select.cart.productList);
     }
 
     cartToggleTrigger() {
@@ -348,7 +345,6 @@
       const thisApp = this;
       const cartWrapper = document.querySelector(select.containerOf.cart);
       thisApp.cart = new Cart(cartWrapper);
-      console.log(thisApp.cart, 'thisApp.cart');
     },
 
     initMenu: function () {
