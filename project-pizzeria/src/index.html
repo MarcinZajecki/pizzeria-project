@@ -63,9 +63,9 @@
   <script id="template-cart-product" type="text/x-handlebars-template">
     <li>
       <div class="widget-amount"> <!-- widget-amount -->
-        <a class="btn-quantity btn-quantity--lt" href="#less"><i class="fas fa-minus"></i></a>
+        <a class="btn-quantity btn-quantity--lt" href="#less"><i class="fas fa-minus" id="decreaseAmount"></i></a>
         <input class="amount" type="text" value="{{ amount }}">
-        <a class="btn-quantity btn-quantity--lt" href="#more"><i class="fas fa-plus"></i></a>
+        <a class="btn-quantity btn-quantity--lt" href="#more"><i class="fas fa-plus" id="increaseAmount"></i></a>
       </div>
       <div class="cart__product">
         <div class="cart__product-header">
@@ -83,7 +83,7 @@
       </div>
       <ul class="cart__action-buttons no-spacing">
         <li><a href="#edit">Edit<i class="fas fa-pencil-alt"></i></a></li>
-        <li><a href="#remove">Remove<i class="fas fa-trash-alt"></i></a></li>
+        <li><a href="#remove">Remove<i class="fas fa-trash-alt" id="removeCartButton"></i></a></li>
       </ul>
     </li>
   </script>
